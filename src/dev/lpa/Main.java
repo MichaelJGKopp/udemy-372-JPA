@@ -15,7 +15,13 @@ public class Main {
     
       var transaction = entityManager.getTransaction();
       transaction.begin();
-      entityManager.persist(new Artist("Muddy Water"));
+      Artist artist = entityManager.find(Artist.class, 202);  // 203 is ID
+//      Artist artist = new Artist(202, "Muddy Water");
+      System.out.println(artist);
+      artist.setArtistName("Muddy Waters");
+//      entityManager.remove(artist);
+//      entityManager.persist(new Artist("Muddy Water"));
+//      entityManager.merge(artist);
       transaction.commit();
     } catch (Exception e) {
       e.printStackTrace();
