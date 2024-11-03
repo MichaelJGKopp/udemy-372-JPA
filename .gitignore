@@ -3,6 +3,8 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
+src/META-INF/persistence.xml
+
 ### Eclipse ###
 .apt_generated
 .classpath
