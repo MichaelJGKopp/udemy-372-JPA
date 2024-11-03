@@ -44,6 +44,10 @@ public class Artist {
     this.artistName = artistName;
   }
   
+  public void addAlbum(String albumName) {
+    albums.add(new Album(albumName));
+  }
+  
   public void removeDuplicates() {
     var set = new TreeSet<>(albums);
     albums.clear();

@@ -7,17 +7,18 @@ import jakarta.persistence.Persistence;
 public class Main {
   
   public static void main(String[] args) {
-  
+    
     try (var sessionFactory = Persistence.createEntityManagerFactory(
       "dev.lpa.music");
          EntityManager entityManager = sessionFactory.createEntityManager();
     ) {
-    
+      
       var transaction = entityManager.getTransaction();
       transaction.begin();
       Artist artist = entityManager.find(Artist.class, 199);  // 203 is ID
 //      Artist artist = new Artist(202, "Muddy Water");
-      artist.removeDuplicates();
+//      artist.removeDuplicates();
+      artist.addAlbum("The Best of Muddy Waters");
       System.out.println(artist);
 //      artist.setArtistName("Muddy Waters");
 //      entityManager.remove(artist);
@@ -27,6 +28,6 @@ public class Main {
     } catch (Exception e) {
       e.printStackTrace();
     }
-  
+    
   }
 }
