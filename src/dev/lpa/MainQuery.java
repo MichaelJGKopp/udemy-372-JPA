@@ -20,15 +20,15 @@ public class MainQuery {
          EntityManager em = emf.createEntityManager()) {
       var transaction = em.getTransaction();
       transaction.begin();
-      artists = getArtistKPQL(em, "%Stev%");
+      artists = getArtistKPQL(em, "%Greatest Hits%");
       artists.forEach(System.out::println);
       
-      var names = getArtistNames(em, "%Stev%");
-      names
-        .map(a -> new Artist(
-          a.get(0, Integer.class),
-          (String) a.get(1)))
-          .forEach(System.out::println);
+//      var names = getArtistNames(em, "%Stev%");
+//      names
+//        .map(a -> new Artist(
+//          a.get("id", Integer.class),
+//          (String) a.get("name")))
+//          .forEach(System.out::println);
       transaction.commit();
     } catch (Exception e) { // temporary
       e.printStackTrace();
@@ -38,16 +38,20 @@ public class MainQuery {
   private static List<Artist> getArtistKPQL(EntityManager em, String matchedValue) {
     
 //    String jpql = "SELECT a FROM Artist a";
-    String jpql = "SELECT a FROM Artist a WHERE a.artistName LIKE ?1";  // random param. name
+//    String jpql = "SELECT a FROM Artist a WHERE a.artistName LIKE ?1";  // random param. name
+    String jpql = "SELECT a FROM Artist a JOIN albums album " +
+                    "WHERE album.albumName LIKE ?1 OR album.albumName LIKE ?2";
     var query = em.createQuery(jpql, Artist.class);
 //    query.setParameter("partialName", matchedValue);
     query.setParameter(1, matchedValue);
+    query.setParameter(2, "%Best of%"); // hardcoded for simplicity
     return query.getResultList();
   }
   
   private static Stream<Tuple> getArtistNames(EntityManager em, String matchedValue) {
 
-    String jpql = "SELECT a.artistId, a.artistName FROM Artist a WHERE a.artistName LIKE ?1";  // random param. name
+    String jpql = "SELECT a.artistId id, a.artistName as name FROM Artist a " +
+                    "WHERE a.artistName LIKE ?1";  // random param. name
     var query = em.createQuery(jpql, Tuple.class);
     query.setParameter(1, matchedValue);
     return query.getResultStream();
