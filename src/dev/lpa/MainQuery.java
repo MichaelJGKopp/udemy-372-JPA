@@ -29,7 +29,7 @@ public class MainQuery {
       artists.forEach(System.out::println);
       
       System.out.println("----------------------------------------");
-      Stream<Artist> sartists = getArtistsBuilder(em, "");
+      Stream<Artist> sartists = getArtistsBuilder(em, "Bl%");
       var map = sartists
                   .limit(10)
                   .collect(Collectors.toMap(
@@ -80,7 +80,10 @@ public class MainQuery {
     CriteriaBuilder builder = em.getCriteriaBuilder();
     CriteriaQuery<Artist> criteriaQuery = builder.createQuery(Artist.class);
     Root<Artist> root = criteriaQuery.from(Artist.class);
-    criteriaQuery.select(root);
+    criteriaQuery
+      .select(root)
+      .where(builder.like(root.get("artistName"), matchedValue))
+      .orderBy(builder.asc(root.get("artistName")));
     return em.createQuery(criteriaQuery).getResultStream();
   }
 }
