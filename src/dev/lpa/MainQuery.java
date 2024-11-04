@@ -29,9 +29,10 @@ public class MainQuery {
   private static List<Artist> getArtistKPQL(EntityManager em, String matchedValue) {
     
 //    String jpql = "SELECT a FROM Artist a";
-    String jpql = "SELECT a FROM Artist a WHERE a.artistName LIKE :partialName";  // random param. name
+    String jpql = "SELECT a FROM Artist a WHERE a.artistName LIKE ?1";  // random param. name
     var query = em.createQuery(jpql, Artist.class);
-    query.setParameter("partialName", matchedValue);
+//    query.setParameter("partialName", matchedValue);
+    query.setParameter(1, matchedValue);
     return query.getResultList();
   }
   
