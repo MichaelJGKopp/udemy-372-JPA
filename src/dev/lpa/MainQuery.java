@@ -18,7 +18,7 @@ public class MainQuery {
          EntityManager em = emf.createEntityManager()) {
       var transaction = em.getTransaction();
       transaction.begin();
-      artists = getArtistKPQL(em, "");
+      artists = getArtistKPQL(em, "%Stev%");
       artists.forEach(System.out::println);
       transaction.commit();
     } catch (Exception e) { // temporary
@@ -28,8 +28,10 @@ public class MainQuery {
   
   private static List<Artist> getArtistKPQL(EntityManager em, String matchedValue) {
     
-    String jpql = "SELECT a FROM Artist a";
+//    String jpql = "SELECT a FROM Artist a";
+    String jpql = "SELECT a FROM Artist a WHERE a.artistName LIKE :partialName";  // random param. name
     var query = em.createQuery(jpql, Artist.class);
+    query.setParameter("partialName", matchedValue);
     return query.getResultList();
   }
   
