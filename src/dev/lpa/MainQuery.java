@@ -4,8 +4,10 @@ import dev.lpa.music.Artist;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.Tuple;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class MainQuery {
   
@@ -22,7 +24,11 @@ public class MainQuery {
       artists.forEach(System.out::println);
       
       var names = getArtistNames(em, "%Stev%");
-      names.forEach(System.out::println);
+      names
+        .map(a -> new Artist(
+          a.get(0, Integer.class),
+          (String) a.get(1)))
+          .forEach(System.out::println);
       transaction.commit();
     } catch (Exception e) { // temporary
       e.printStackTrace();
@@ -39,12 +45,12 @@ public class MainQuery {
     return query.getResultList();
   }
   
-  private static List<String> getArtistNames(EntityManager em, String matchedValue) {
+  private static Stream<Tuple> getArtistNames(EntityManager em, String matchedValue) {
 
-    String jpql = "SELECT a.artistName FROM Artist a WHERE a.artistName LIKE ?1";  // random param. name
-    var query = em.createQuery(jpql, String.class);
+    String jpql = "SELECT a.artistId, a.artistName FROM Artist a WHERE a.artistName LIKE ?1";  // random param. name
+    var query = em.createQuery(jpql, Tuple.class);
     query.setParameter(1, matchedValue);
-    return query.getResultList();
+    return query.getResultStream();
   }
   
 }
