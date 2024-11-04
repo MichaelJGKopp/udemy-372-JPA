@@ -20,6 +20,9 @@ public class MainQuery {
       transaction.begin();
       artists = getArtistKPQL(em, "%Stev%");
       artists.forEach(System.out::println);
+      
+      var names = getArtistNames(em, "%Stev%");
+      names.forEach(System.out::println);
       transaction.commit();
     } catch (Exception e) { // temporary
       e.printStackTrace();
@@ -32,6 +35,14 @@ public class MainQuery {
     String jpql = "SELECT a FROM Artist a WHERE a.artistName LIKE ?1";  // random param. name
     var query = em.createQuery(jpql, Artist.class);
 //    query.setParameter("partialName", matchedValue);
+    query.setParameter(1, matchedValue);
+    return query.getResultList();
+  }
+  
+  private static List<String> getArtistNames(EntityManager em, String matchedValue) {
+
+    String jpql = "SELECT a.artistName FROM Artist a WHERE a.artistName LIKE ?1";  // random param. name
+    var query = em.createQuery(jpql, String.class);
     query.setParameter(1, matchedValue);
     return query.getResultList();
   }
