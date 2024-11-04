@@ -29,7 +29,8 @@ public class MainQuery {
       artists.forEach(System.out::println);
       
       System.out.println("----------------------------------------");
-      Stream<Artist> sartists = getArtistsBuilder(em, "Bl%");
+//      Stream<Artist> sartists = getArtistsBuilder(em, "Bl%");
+      Stream<Artist> sartists = getArtistsSQL(em, "Bl%");
       var map = sartists
                   .limit(10)
                   .collect(Collectors.toMap(
@@ -85,5 +86,13 @@ public class MainQuery {
       .where(builder.like(root.get("artistName"), matchedValue))
       .orderBy(builder.asc(root.get("artistName")));
     return em.createQuery(criteriaQuery).getResultStream();
+  }
+  
+  private static Stream<Artist> getArtistsSQL(EntityManager em, String matchedValue) {
+    
+    var query = em.createNativeQuery(
+      "SELECT * FROM music.artists WHERE artist_name like ?1", Artist.class);
+    query.setParameter(1, matchedValue);
+    return query.getResultStream();
   }
 }
