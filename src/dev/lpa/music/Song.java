@@ -20,6 +20,11 @@ public class Song {
   public Song() {
   }
   
+  public Song(int trackNumber, String songTitle) {
+    this.trackNumber = trackNumber;
+    this.songTitle = songTitle;
+  }
+  
   public int getSongId() {
     return songId;
   }
@@ -30,5 +35,14 @@ public class Song {
   
   public String getSongTitle() {
     return songTitle;
+  }
+  
+  @Override
+  public String toString() {
+    return "Song{" +
+             "songId=" + songId +
+             ", trackNumber=" + trackNumber +
+             ", songTitle='" + songTitle + '\'' +
+             '}';
   }
 }
