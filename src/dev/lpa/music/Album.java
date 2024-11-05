@@ -5,64 +5,65 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "albums")
 public class Album implements Comparable<Album> {
-  
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name="album_id")
-  private int albumId;
-  
-  @Column(name="album_name")
-  private String albumName;
-  
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "album_id")
-  private List<Song> songs = new ArrayList<>();
-  
-  public Album() {
-  }
-  
-  public Album(String albumName) {
-    this.albumName = albumName;
-  }
-  
-  public Album(int albumId, String albumName) {    this.albumId = albumId;
-    this.albumName = albumName;
-  }
-  
-  public String getAlbumName() {
-    return albumName;
-  }
-  
-  public List<Song> getSongs() {
-    return songs;
-  }
-  
-  public void setAlbumName(String albumName) {
-    this.albumName = albumName;
-  }
-  
-  @Override
-  public String toString() {
-    
-    List<Song> songsOrdered = new ArrayList<>(songs);
-    songsOrdered.sort(Comparator.comparing(Song::getTrackNumber));
-    
-    return "Album{" +
-             "albumId=" + albumId +
-             ", albumName='" + albumName + '\'' + ", songs=\n" +
-             songs.stream()
-               .sorted(Comparator.comparing(Song::getTrackNumber))
-               .map(Song::toString)
-               .collect(Collectors.joining("\n\t", "\t", "\n}"));
-  }
-  
-  @Override
-  public int compareTo(Album o) {
-    return this.getAlbumName().compareTo(o.getAlbumName());
-  }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="album_id")
+    private int albumId;
+
+    @Column(name="album_name")
+    private String albumName;
+
+    @OneToMany
+    @JoinColumn(name="album_id")
+    private List<Song> playList = new ArrayList<>();
+
+    public Album() {
+    }
+
+    public Album(String albumName) {
+        this.albumName = albumName;
+    }
+
+    public Album(int albumId, String albumName) {
+        this.albumId = albumId;
+        this.albumName = albumName;
+    }
+
+    public String getAlbumName() {
+        return albumName;
+    }
+
+    public void setAlbumName(String albumName) {
+        this.albumName = albumName;
+    }
+
+    public List<Song> getPlayList() {
+        return playList;
+    }
+
+    @Override
+    public String toString() {
+
+        playList.sort(Comparator.comparing(Song::getTrackNumber));
+        StringBuilder sb = new StringBuilder();
+        for (Song s : playList) {
+            sb.append("\n\t").append(s);
+        }
+        sb.append("\n");
+        return "Album{" +
+                "albumId=" + albumId +
+                ", albumName='" + albumName + '\'' +
+                ", songs = " + sb +
+                '}';
+    }
+
+    @Override
+    public int compareTo(Album o) {
+        return this.albumName.compareTo(o.getAlbumName());
+    }
 }
